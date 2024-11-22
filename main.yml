@@ -1,0 +1,2 @@
+play_book_dir: "/data/work/elasticsearch_8.x_ansible"
+elasticsearch_version: "8.4.2"

@@ -1,0 +1,33 @@
+---
+- name: download Package elasticsearch
+  hosts: servers
+  become: yes
+  vars_files:
+    - /data/work/elasticsearch_8.x_ansible/main.yml
+  tasks:
+    - name: Install apt transport for https protocol
+      shell: 'apt-get install -y apt-transport-https'
+
+    - name: Update apt and install wget and curl
+      shell: 'apt-get update -y && apt-get install -y wget curl'
+
+    - name: elasticsearch apt 리포지토리 추가
+      shell: sh -c 'echo "deb https://artifacts.elastic.co/packages/8.x/apt stable main" > /etc/apt/sources.list.d/elastic-8.x.list'
+
+    - name: elasticsearch apt 리포지토리의 GPG 키 시스템에 추가
+      shell: 'wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -'
+
+    - name: 패키지 목록 업데이트
+      shell: 'apt-get update -y'
+
+    - name: elasticsearch 설치
+      shell: 'apt-get install -y elasticsearch={{ elasticsearch_version }}'
+
+- name: entrypoint_sh start
+  hosts: localhost
+  become: yes
+  vars_files:
+    - /data/work/elasticsearch_8.x_ansible/main.yml
+  tasks:
+    - name: entry_point_sh start
+      shell: "{{ play_book_dir }}/entrypoint.sh"
